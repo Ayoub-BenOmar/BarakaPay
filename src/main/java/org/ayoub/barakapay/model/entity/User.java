@@ -9,6 +9,7 @@ import org.ayoub.barakapay.enums.Role;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
@@ -33,4 +34,7 @@ public class User {
 
     @Column
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @OneToOne(mappedBy = "client", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Account account;
 }

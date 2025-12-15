@@ -1,18 +1,16 @@
 package org.ayoub.barakapay.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "accounts")
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Account {
 
     @Id
@@ -28,4 +26,11 @@ public class Account {
     @OneToOne
     @JoinColumn(name = "client_id", nullable = false, unique = true)
     private User client;
+
+    @OneToMany(mappedBy = "accountSource")
+    private List<Operation> outgoingOperations;
+
+    @OneToMany(mappedBy = "accountDestination")
+    private List<Operation> incomingOperations;
+
 }

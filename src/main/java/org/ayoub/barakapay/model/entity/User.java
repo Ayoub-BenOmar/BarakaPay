@@ -1,9 +1,7 @@
 package org.ayoub.barakapay.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.ayoub.barakapay.enums.Role;
 
 import java.time.LocalDateTime;
@@ -12,7 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id

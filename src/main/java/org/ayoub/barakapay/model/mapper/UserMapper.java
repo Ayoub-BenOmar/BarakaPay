@@ -1,5 +1,6 @@
 package org.ayoub.barakapay.model.mapper;
 
+import org.ayoub.barakapay.model.dto.RegisterUserDto;
 import org.ayoub.barakapay.model.dto.UserDto;
 import org.ayoub.barakapay.model.entity.Account;
 import org.ayoub.barakapay.model.entity.User;
@@ -14,7 +15,7 @@ public interface UserMapper {
     UserDto toDto(User user);
 
     @Mapping(source = "accountId", target = "account", qualifiedByName = "idToAccount")
-    User toEntity(UserDto dto);
+    User toEntity(RegisterUserDto dto);
 
     @Named("idToAccount")
     default Account idToAccount(Integer id) {

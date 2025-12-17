@@ -7,6 +7,7 @@ import org.ayoub.barakapay.enums.OperationType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "operations")
@@ -43,4 +44,7 @@ public class Operation {
     @ManyToOne
     @JoinColumn(name = "account_destination_id")
     private Account accountDestination;
+
+    @OneToMany(mappedBy = "operation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Document> documents;
 }

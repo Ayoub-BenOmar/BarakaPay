@@ -1,6 +1,7 @@
 package org.ayoub.barakapay.config;
 
 import lombok.RequiredArgsConstructor;
+import org.ayoub.barakapay.filter.JwtAuthFilter;
 import org.ayoub.barakapay.service.security.CustomAuthenticationProvider;
 import org.ayoub.barakapay.service.security.JwtAccessDeniedHandler;
 import org.ayoub.barakapay.service.security.JwtAuthenticationEntryPoint;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -20,6 +22,7 @@ public class SecurityConfig {
     private final CustomAuthenticationProvider customAuthenticationProvider;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAccessDeniedHandler accessDeniedHandler;
+    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,7 +47,9 @@ public class SecurityConfig {
 
                 .httpBasic(basic -> {})
 
-                .authenticationProvider(customAuthenticationProvider);
+                .authenticationProvider(customAuthenticationProvider)
+
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

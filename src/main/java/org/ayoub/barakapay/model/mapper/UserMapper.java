@@ -14,7 +14,7 @@ public interface UserMapper {
     @Mapping(source = "account.id", target = "accountId")
     UserDto toDto(User user);
 
-    @Mapping(source = "accountId", target = "account", qualifiedByName = "idToAccount")
+//    @Mapping(source = "accountId", target = "account", qualifiedByName = "idToAccount")
     User toEntity(RegisterUserDto dto);
 
     @Named("idToAccount")

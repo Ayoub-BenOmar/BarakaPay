@@ -23,12 +23,15 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column
+    @Column(name = "full_name")
     private String fullName;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(nullable = false)
+    private boolean isActive;
 
     @Column
     private LocalDateTime createdAt = LocalDateTime.now();

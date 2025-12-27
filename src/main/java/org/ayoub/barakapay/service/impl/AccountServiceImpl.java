@@ -27,10 +27,5 @@ public class AccountServiceImpl implements AccountService {
         account.setBalance(BigDecimal.valueOf(0.0));
         account = accountRepository.save(account);
         return account;
-
-    }
-
-    public void activateAccount(Integer accountId){
-
     }
 }

@@ -1,7 +1,8 @@
 package org.ayoub.barakapay.enums;
 
 public enum Role {
-    ADMIN,
-    AGENT,
-    CLIENT
+    ROLE_ADMIN,
+    ROLE_AGENT,
+    ROLE_CLIENT
 }
+

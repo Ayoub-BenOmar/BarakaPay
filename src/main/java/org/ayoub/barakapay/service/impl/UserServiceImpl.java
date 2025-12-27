@@ -9,6 +9,8 @@ import org.ayoub.barakapay.model.entity.User;
 import org.ayoub.barakapay.model.mapper.UserMapper;
 import org.ayoub.barakapay.repository.UserRepository;
 import org.ayoub.barakapay.service.UserService;
+import org.ayoub.barakapay.service.security.CustomUserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AccountServiceImpl accountService;
 
     @Override
     public UserDto register(RegisterUserDto userDto) {
@@ -33,9 +36,27 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toEntity(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setFullName(user.getFullName());
-        user.setRole(Role.CLIENT);
-        user.setActive(false);
+        if (user.getRole() == null){
+            user.setRole(Role.ROLE_CLIENT);
+        }
+
+        Authentication authUser = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authUser != null && authUser.getPrincipal() instanceof CustomUserDetails customUserDetails) {
+            User currentUser = customUserDetails.getUser();
+
+            if (currentUser.getRole() == Role.ROLE_ADMIN) {
+                user.setActive(true);
+            } else {
+                user.setActive(false);
+            }
+        } else {
+            user.setActive(false);
+        }
+
         User savedUser = userRepository.save(user);
+
+        user.setAccount(accountService.addAccount(user));
         return userMapper.toDto(savedUser);
     }
 
@@ -51,6 +72,14 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserDto activateUser(Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow( () -> new RuntimeException("User not found with id: " + userId));
+        user.setActive(true);
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDto(updatedUser);
     }
 
     @Override

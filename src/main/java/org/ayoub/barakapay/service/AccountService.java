@@ -5,5 +5,4 @@ import org.ayoub.barakapay.model.entity.User;
 
 public interface AccountService {
     Account addAccount(User user);
-    void activateAccount(Integer accountId);
 }

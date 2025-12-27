@@ -1,6 +1,7 @@
 package org.ayoub.barakapay.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.ayoub.barakapay.enums.Role;
 import org.ayoub.barakapay.model.dto.RegisterUserDto;
 import org.ayoub.barakapay.model.dto.UserDto;
 import org.ayoub.barakapay.service.impl.AccountServiceImpl;
@@ -29,5 +30,10 @@ public class AdminController {
     @PostMapping("/add-client")
     public UserDto addClient(@RequestBody RegisterUserDto userDto){
         return userService.register(userDto);
+    }
+
+    @PutMapping("/manage-role/{id}/role")
+    public UserDto manageUserRole(@PathVariable Integer id, @RequestParam Role role) {
+        return userService.changeUserRole(id, role);
     }
 }

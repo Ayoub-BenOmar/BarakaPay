@@ -94,8 +94,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUserRole(Integer userId, Role role) {
-
+    public UserDto changeUserRole(Integer userId, Role role) {
+        User user = userRepository.findById(userId).orElseThrow( () -> new RuntimeException("User not found with id: " + userId));
+        user.setRole(role);
+        userRepository.save(user);
+        return userMapper.toDto(user);
     }
 
     public UserDto getCurrentUserProfile() {

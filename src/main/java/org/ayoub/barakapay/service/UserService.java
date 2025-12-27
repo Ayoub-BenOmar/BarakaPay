@@ -15,5 +15,5 @@ public interface UserService {
     UserDto activateUser(Integer userId);
     UserDto update(UserDto user);
     void delete(Integer id);
-    void changeUserRole(Integer userId, Role role);
+    UserDto changeUserRole(Integer userId, Role role);
 }

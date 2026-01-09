@@ -1,0 +1,85 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-barakapay
+    environment:
+      POSTGRES_DB: BarakaPay
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: barca1230
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - barakapay-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.1
+    container_name: keycloak-barakapay
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: Ayuub
+      KEYCLOAK_ADMIN_PASSWORD: barca1230/
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/BarakaPay
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: barca1230
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8081
+      KC_HOSTNAME_STRICT: false
+    ports:
+      - "8081:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - barakapay-network
+    # Wait for Keycloak to be fully ready
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  barakapay-app:
+    build: .
+    container_name: barakapay-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    environment:
+      # Database
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: BarakaPay
+      DB_USERNAME: postgres
+      DB_PASSWORD: barca1230
+
+      # Keycloak - IMPORTANT: Use internal Docker network address
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/BarakaPay
+
+      # Optional: For debugging
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_OPTS: "-Dlogging.level.org.springframework.security=DEBUG"
+    networks:
+      - barakapay-network
+    # Give Keycloak time to create the realm
+    command: sh -c "echo 'Waiting for services...' && sleep 15 && java -jar app.jar"
+
+volumes:
+  postgres_data:
+
+networks:
+  barakapay-network:
+    driver: bridge

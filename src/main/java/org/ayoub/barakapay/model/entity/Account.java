@@ -32,5 +32,4 @@ public class Account {
 
     @OneToMany(mappedBy = "accountDestination")
     private List<Operation> incomingOperations;
-
 }

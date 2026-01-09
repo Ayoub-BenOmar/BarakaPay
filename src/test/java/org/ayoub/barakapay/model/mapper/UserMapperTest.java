@@ -21,7 +21,7 @@ public class UserMapperTest {
         user.setId(1);
         user.setEmail("a@b.com");
         user.setFullName("A B");
-        user.setRole(Role.CLIENT);
+        user.setRole(Role.ROLE_CLIENT);
         user.setCreatedAt(LocalDateTime.now());
         Account account = new Account();
         account.setId(42);

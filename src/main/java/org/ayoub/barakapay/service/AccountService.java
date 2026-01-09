@@ -5,4 +5,6 @@ import org.ayoub.barakapay.model.entity.User;
 
 public interface AccountService {
     Account addAccount(User user);
+    Account findById(Integer id);
+    Account findAccountByClientId(Integer clientId);
 }
